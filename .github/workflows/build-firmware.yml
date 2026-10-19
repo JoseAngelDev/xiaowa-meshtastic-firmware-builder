@@ -29,12 +29,12 @@ jobs:
 
     steps:
       - name: Checkout this repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
           path: builder
 
       - name: Checkout meshtastic/firmware
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
           repository: meshtastic/firmware
           ref: ${{ inputs.firmware_branch }}
@@ -54,9 +54,9 @@ jobs:
           sed -i 's#bool dontUplink = !mp_decoded.decoded.has_bitfield || !(mp_decoded.decoded.bitfield & BITFIELD_OK_TO_MQTT_MASK);#bool dontUplink = false;#' src/mqtt/MQTT.cpp
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.14"
+          python-version: "3.11"
 
       - name: Install PlatformIO
         run: pip install --upgrade platformio
@@ -72,9 +72,8 @@ jobs:
           tar -cJf ${{ env.FIRMWARE_ARCHIVE }} --ignore-failed-read *.bin *.uf2
 
       - name: Upload firmware artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.FIRMWARE_ARCHIVE }}
           path: firmware/.pio/build/${{ inputs.variant }}/${{ env.FIRMWARE_ARCHIVE }}
-          archive: false
           if-no-files-found: error
